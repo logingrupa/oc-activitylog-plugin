@@ -23,7 +23,6 @@
         <env name="CMS_ROUTE_CACHE" value="true" />
         <env name="CMS_TWIG_CACHE" value="false" />
         <env name="ENABLE_CSRF" value="false" />
-        <env name="VITE_DEV_SERVER_ENABLED" value="false" />
         <env name="DB_CONNECTION" value="pgsql" force="true" />
         <env name="DB_HOST" value="127.0.0.1" force="true" />
         <env name="DB_DATABASE" value="activitylog_testing" force="true" />

@@ -33,6 +33,7 @@ final class LogsAttributedActivityTest extends ActivitylogTestCase
         Schema::create(self::PROBE_TABLE, static function (Blueprint $obTable): void {
             $obTable->uuid('id')->primary();
             $obTable->string('name');
+            $obTable->unsignedInteger('views')->default(0);
             $obTable->timestamps();
         });
         $this->obWriter = $this->createUser('writer@example.com');
@@ -145,6 +146,21 @@ final class LogsAttributedActivityTest extends ActivitylogTestCase
 
         $this->assertInstanceOf(MissingCauserException::class, $obFailure);
         $this->assertSame(1, DB::table(self::PROBE_TABLE)->count());
+        $this->assertSame(1, Activity::query()->count());
+    }
+
+    /**
+     * testAnIncrementWithNoUserIsRefusedBeforeTheUpdate signs the writer out after the note exists and increments a column.
+     */
+    public function testAnIncrementWithNoUserIsRefusedBeforeTheUpdate(): void
+    {
+        $obNote = $this->noteNamed('Alpha');
+        Auth::logout();
+
+        $obFailure = $this->thrownBy(static fn () => $obNote->increment('views'));
+
+        $this->assertInstanceOf(MissingCauserException::class, $obFailure);
+        $this->assertSame(0, DB::table(self::PROBE_TABLE)->value('views'));
         $this->assertSame(1, Activity::query()->count());
     }
 

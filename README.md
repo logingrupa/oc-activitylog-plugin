@@ -120,7 +120,7 @@ Keep `description` a stable key. A name or a sentence in it cannot be translated
 
 ## 7. Causer rules
 
-The causer is the user of the default guard, the RainLab.User web user. A save or a delete that has no such user throws `MissingCauserException` before the model's SQL runs. The trait guards deletes as well as saves because `Model::delete()` fires no `saving` event.
+The causer is the user of the default guard, the RainLab.User web user. A save, an increment or decrement, or a delete that has no such user throws `MissingCauserException` before the model's SQL runs. The trait guards `saving`, `updating` and `deleting` because `Model::delete()` fires no `saving` event, and `increment()` and `decrement()` fire `updating` but never `saving`.
 
 A backend administrator, a console command or a queue job sets the causer around the write:
 
@@ -149,7 +149,7 @@ From the first tag, these names change only in a new major version with a conver
 
 - The table name, and its columns and their types.
 - The `Activity` model, its `$table`, `UPDATED_AT`, casts and `$morphTo` arrays. It declares no fillable list, no builder and none of `isFillable`, `newEloquentBuilder`, `newModelQuery` or `setKeysForSaveQuery`.
-- The `LogsAttributedActivity` trait and its guard on `saving` and `deleting`.
+- The `LogsAttributedActivity` trait and its guard on `saving`, `updating` and `deleting`.
 - `MissingCauserException` and its `forAnonymousWrite()` constructor.
 - The `activitylog.activity_model` key as the override point, the `activitylog.buffer.enabled` pin and the `RainLab.User` requirement.
 
