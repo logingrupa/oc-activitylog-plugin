@@ -1,0 +1,114 @@
+includes:
+    - ../../../vendor/larastan/larastan/extension.neon
+    - ../../../vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - ../../../vendor/orrison/meliorstan/config/extension.neon
+
+# MeliorStan reports a value above its maximum, so a method of exactly the maximum
+# passes and one line more fails.
+rules:
+    - Orrison\MeliorStan\Rules\CyclomaticComplexity\CyclomaticComplexityRule
+    - Orrison\MeliorStan\Rules\NpathComplexity\NpathComplexityRule
+    - Orrison\MeliorStan\Rules\ExcessiveMethodLength\ExcessiveMethodLengthRule
+    - Orrison\MeliorStan\Rules\ExcessiveClassLength\ExcessiveClassLengthRule
+    - Orrison\MeliorStan\Rules\ExcessiveParameterList\ExcessiveParameterListRule
+    - Orrison\MeliorStan\Rules\ExcessivePublicCount\ExcessivePublicCountRule
+    - Orrison\MeliorStan\Rules\TooManyFields\TooManyFieldsRule
+    - Orrison\MeliorStan\Rules\TooManyMethods\TooManyMethodsRule
+    - Orrison\MeliorStan\Rules\TooManyPublicMethods\TooManyPublicMethodsRule
+    - Orrison\MeliorStan\Rules\ExcessiveClassComplexity\ExcessiveClassComplexityRule
+    - Orrison\MeliorStan\Rules\ShortVariable\ShortVariableRule
+    - Orrison\MeliorStan\Rules\LongVariable\LongVariableRule
+    - Orrison\MeliorStan\Rules\ShortMethodName\ShortMethodNameRule
+    - Orrison\MeliorStan\Rules\ConstructorWithNameAsEnclosingClass\ConstructorWithNameAsEnclosingClassRule
+    - Orrison\MeliorStan\Rules\ConstantNamingConventions\ConstantNamingConventionsRule
+    - Orrison\MeliorStan\Rules\BooleanGetMethodName\BooleanGetMethodNameRule
+
+parameters:
+    level: 10
+    paths:
+        - Plugin.php
+        - exceptions
+        - models
+        - traits
+        - updates
+        - tests
+    # PluginTestCase and TestCase are global classes that no autoloader finds. The tests
+    # bootstrap.php is not listed: it redefines LARAVEL_START.
+    bootstrapFiles:
+        - ../../../modules/system/tests/TestCase.php
+        - ../../../modules/system/tests/PluginTestCase.php
+    stubFiles:
+        - phpstan-stubs/HasRelationships.stub
+    tmpDir: ../../../storage/temp/phpstan/activitylog
+    filesRootDir: %rootDir%/../../..
+
+    meliorstan:
+        cyclomatic_complexity:
+            report_level: 10
+            show_classes_complexity: true
+            show_methods_complexity: true
+        npath_complexity:
+            maximum: 200
+        excessive_method_length:
+            maximum: 30
+            ignore_whitespace: true
+        excessive_class_length:
+            maximum: 400
+            ignore_whitespace: true
+        excessive_parameter_list:
+            maximum: 8
+        excessive_public_count:
+            maximum: 45
+            ignore_pattern: ''
+        too_many_fields:
+            max_fields: 20
+        too_many_methods:
+            max_methods: 25
+            ignore_pattern: '^(set|get)'
+        too_many_public_methods:
+            max_methods: 10
+            ignore_pattern: '^(set|get|test)'
+        excessive_class_complexity:
+            maximum: 50
+        short_variable:
+            minimum_length: 3
+        long_variable:
+            maximum: 25
+        short_method_name:
+            minimum_length: 3
+            exceptions: ['up']
+        boolean_get_method_name:
+            check_parameterized_methods: false
+
+    # Every row of the activity table is a record of who changed what, so no code may switch the logger off.
+    disallowedStaticCalls:
+        -
+            method:
+                - 'Spatie\Activitylog\Facades\Activity::disableLogging()'
+                - 'Spatie\Activitylog\Facades\Activity::withoutLogging()'
+            message: 'the facade form of the same switch is banned too'
+
+    disallowedMethodCalls:
+        -
+            method:
+                - 'Spatie\Activitylog\Support\ActivityLogger::disableLogging()'
+                - 'Spatie\Activitylog\Support\ActivityLogger::withoutLogging()'
+                - 'Spatie\Activitylog\Support\ActivityLogStatus::disable()'
+                - '*::disableLogging()'
+            message: 'The trail is never silenced'
+
+    disallowedFunctionCalls:
+        -
+            function: 'assert()'
+            message: 'use throw - assert() is a silent no-op when zend.assertions=0 (production default)'
+        -
+            function:
+                - 'dd()'
+                - 'dump()'
+                - 'var_dump()'
+                - 'print_r()'
+                - 'eval()'
+            message: 'no debug output or dynamic code in the plugin'
+        -
+            function: 'env()'
+            message: 'read configuration through config(), env() returns null once the config is cached'

@@ -1,0 +1,16 @@
+<?php
+
+namespace October\Rain\Database\Concerns;
+
+trait HasRelationships
+{
+    /**
+     * October documents the return as its BelongsTo class, but morphTo returns Illuminate's MorphTo.
+     * Only the method the plugin calls is declared.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
+    public function morphTo($name = null, $type = null, $id = null, $ownerKey = null)
+    {
+    }
+}
