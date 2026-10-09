@@ -122,6 +122,8 @@ Keep `description` a stable key. A name or a sentence in it cannot be translated
 
 The causer is the user of the default guard, the RainLab.User web user. A save, an increment or decrement, or a delete that has no such user throws `MissingCauserException` before the model's SQL runs. The trait guards `saving`, `updating` and `deleting` because `Model::delete()` fires no `saving` event, and `increment()` and `decrement()` fire `updating` but never `saving`.
 
+The guard listens to model events, so a write that fires none is neither refused nor logged: `saveQuietly()`, `updateQuietly()`, `deleteQuietly()`, `incrementQuietly()`, `decrementQuietly()`, a callback inside `Model::withoutEvents()`, and `increment()` or `decrement()` on a model that has not been saved yet, which Laravel runs as a plain query. A project whose trail must be complete forbids those calls in its own static analysis.
+
 A backend administrator, a console command or a queue job sets the causer around the write:
 
 ```php

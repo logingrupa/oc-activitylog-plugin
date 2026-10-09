@@ -165,6 +165,23 @@ final class LogsAttributedActivityTest extends ActivitylogTestCase
     }
 
     /**
+     * testAQuietSaveWithNoUserIsNeitherRefusedNorLogged signs the writer out after the note exists and saves a rename without events.
+     * The guard listens to model events, so a write that fires none passes it and leaves no row.
+     */
+    public function testAQuietSaveWithNoUserIsNeitherRefusedNorLogged(): void
+    {
+        $obNote = $this->noteNamed('Alpha');
+        Auth::logout();
+        $obNote->setAttribute('name', 'Quiet');
+
+        $obFailure = $this->thrownBy(static fn () => $obNote->saveQuietly());
+
+        $this->assertNull($obFailure);
+        $this->assertSame('Quiet', DB::table(self::PROBE_TABLE)->value('name'));
+        $this->assertSame(1, Activity::query()->count());
+    }
+
+    /**
      * noteNamed stores a note while the writer is signed in.
      */
     private function noteNamed(string $sName): FixtureNote
