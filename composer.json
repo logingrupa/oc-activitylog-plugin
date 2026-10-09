@@ -1,0 +1,36 @@
+{
+    "name": "logingrupa/oc-activitylog-plugin",
+    "type": "october-plugin",
+    "description": "An opinionated October adapter for spatie/laravel-activitylog: uuid subjects only, every row has a causer, rows are immutable.",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "october/rain": "^4.4",
+        "composer/installers": "~1.0",
+        "spatie/laravel-activitylog": "^5.1",
+        "rainlab/user-plugin": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Logingrupa\\Activitylog\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Logingrupa\\Activitylog\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "pint": "php ../../../vendor/bin/pint . --config=pint.json",
+        "pint-test": "php ../../../vendor/bin/pint . --config=pint.json --test",
+        "analyse": "php ../../../vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --memory-limit=1G",
+        "test": "cd ../../.. && php artisan plugin:test Logingrupa.Activitylog --without-tty",
+        "qa": ["@pint-test", "@analyse", "@test"]
+    },
+    "extra": {
+        "october": {
+            "plugin": "Logingrupa.Activitylog",
+            "installer-name": "activitylog"
+        }
+    }
+}

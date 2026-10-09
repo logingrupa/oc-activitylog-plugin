@@ -1,0 +1,4 @@
+v1.0.1: First version of Activitylog
+v1.1.0:
+    - Create the activities table
+    - create_activities_table.php
