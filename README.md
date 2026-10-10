@@ -1,6 +1,6 @@
 # Activity log for October CMS
 
-An opinionated October adapter for spatie/laravel-activitylog: uuid subjects only, every row has a causer, rows are immutable.
+An opinionated October adapter for spatie/laravel-activitylog: every row has a causer, rows are immutable.
 
 ## 1. What it is
 
@@ -12,7 +12,6 @@ The package logs who changed which model. It does not run on October CMS out of 
 
 It also takes positions the package leaves open, and you should know them before you install it:
 
-- Subjects must have UUID keys. The `subject_id` column is a `uuid`.
 - The causer comes from the RainLab.User web guard. A backend administrator, a console command and a queue job have no web user, so a write there names its causer explicitly (section 7).
 - A write with no causer is refused, never stored anonymously.
 - Rows are written once and never updated.
@@ -74,7 +73,7 @@ The plugin has no `boot()`, no config file, no routes, no events, no permissions
 | `log_name` | string, nullable | |
 | `description` | text | A stable key such as `note.created` |
 | `subject_type` | string, nullable | The subject's class |
-| `subject_id` | uuid, nullable | |
+| `subject_id` | bigint, nullable | |
 | `event` | string, nullable | `created`, `updated` or `deleted` |
 | `causer_type` | string | Not null |
 | `causer_id` | bigint | Not null |
@@ -91,14 +90,12 @@ There are no foreign keys. A row outlives a deleted subject and a deleted user, 
 Use the trait in the model class and describe what to log:
 
 ```php
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Logingrupa\Activitylog\Traits\LogsAttributedActivity;
 use October\Rain\Database\Model;
 use Spatie\Activitylog\Support\LogOptions;
 
 class Note extends Model
 {
-    use HasUuids;
     use LogsAttributedActivity;
 
     public function getActivitylogOptions(): LogOptions
@@ -161,7 +158,6 @@ The repository follows semantic versioning. `updates/version.yaml` on the defaul
 
 ## 10. Limits
 
-- Only models with UUID keys can be subjects. Changing that needs a new major version.
 - Buffered logging is not supported and is switched off.
 - `php artisan activitylog:clean` is the package's command. Whether to schedule it is your decision. The plugin never does.
 - There is no screen, no settings page and no query scope. Rows are written, not read.

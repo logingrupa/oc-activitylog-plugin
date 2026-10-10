@@ -26,7 +26,7 @@ use Spatie\Activitylog\Contracts\Activity as ActivityContract;
  * @property string|null $log_name
  * @property string $description
  * @property string|null $subject_type
- * @property string|null $subject_id
+ * @property int|null $subject_id
  * @property string|null $event
  * @property string $causer_type
  * @property int $causer_id
