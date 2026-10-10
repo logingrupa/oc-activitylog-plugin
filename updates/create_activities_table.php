@@ -12,8 +12,7 @@ use October\Rain\Database\Updates\Migration;
  * Creates the activity table. The package's own migration stub is not used: October's updater accepts only its own Migration class,
  * and the stub's morph columns would not fit this plugin's rules.
  *
- * subject_id is a uuid. The stub's morph helper makes an unsigned bigint, which cannot hold a UUID, so models with integer keys
- * are not loggable subjects. Only a new major version with a conversion migration can change that.
+ * subject_id is the stub's nullable unsigned bigint morph column, so any integer-keyed model can be a subject.
  * causer_type and causer_id are not null: a row with no causer is not a trail row, the trait refuses it first and the database refuses it for any
  * consumer that writes without the trait.
  * The table has created_at and no second timestamp column, because rows are never updated.
@@ -39,7 +38,7 @@ final class CreateActivitiesTable extends Migration
             $obTable->string('log_name')->nullable();
             $obTable->text('description');
             $obTable->string('subject_type')->nullable();
-            $obTable->uuid('subject_id')->nullable();
+            $obTable->unsignedBigInteger('subject_id')->nullable();
             $obTable->string('event')->nullable();
             $obTable->string('causer_type');
             $obTable->bigInteger('causer_id');

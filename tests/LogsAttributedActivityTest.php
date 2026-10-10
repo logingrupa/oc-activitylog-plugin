@@ -14,7 +14,7 @@ use Logingrupa\Activitylog\Tests\Fixtures\Models\FixtureNote;
 use RainLab\User\Models\User;
 
 /**
- * The trait on a model with a UUID key and no owner: what a save and a delete write, and what they refuse when nobody is signed in.
+ * The trait on a model with an integer key and no owner: what a save and a delete write, and what they refuse when nobody is signed in.
  */
 final class LogsAttributedActivityTest extends ActivitylogTestCase
 {
@@ -31,7 +31,7 @@ final class LogsAttributedActivityTest extends ActivitylogTestCase
         parent::setUp();
 
         Schema::create(self::PROBE_TABLE, static function (Blueprint $obTable): void {
-            $obTable->uuid('id')->primary();
+            $obTable->id();
             $obTable->string('name');
             $obTable->unsignedInteger('views')->default(0);
             $obTable->timestamps();

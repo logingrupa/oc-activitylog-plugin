@@ -1,7 +1,7 @@
 {
     "name": "logingrupa/oc-activitylog-plugin",
     "type": "october-plugin",
-    "description": "An opinionated October adapter for spatie/laravel-activitylog: uuid subjects only, every row has a causer, rows are immutable.",
+    "description": "An opinionated October adapter for spatie/laravel-activitylog: every row has a causer, rows are immutable.",
     "license": "MIT",
     "require": {
         "php": "^8.4",
