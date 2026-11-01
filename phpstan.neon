@@ -26,12 +26,7 @@ rules:
 parameters:
     level: 10
     paths:
-        - Plugin.php
-        - exceptions
-        - models
-        - traits
-        - updates
-        - tests
+        - .
     # PluginTestCase and TestCase are global classes that no autoloader finds. The tests
     # bootstrap.php is not listed: it redefines LARAVEL_START.
     bootstrapFiles:
